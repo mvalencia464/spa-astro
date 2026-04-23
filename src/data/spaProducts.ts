@@ -40,6 +40,7 @@ export interface SpaProduct {
   model: string;
   startingPrice: string;
   heroAlt: string;
+  heroImage?: string;
   gallery: string[];
   quickSpecs: {
     seats: string;
@@ -919,6 +920,8 @@ for (const product of allProducts) mergedProducts.set(product.slug, product);
 
 export const spaProducts = [...mergedProducts.values()];
 for (const product of spaProducts) {
+  const [heroLifestyle] = lifestyleForSlug(product.slug, 1);
+  product.heroImage = heroLifestyle;
   product.gallery = uniqueStrings([...product.gallery, ...lifestyleForSlug(product.slug, 2)]);
 }
 export const spaProductBySlug = Object.fromEntries(spaProducts.map((product) => [product.slug, product]));

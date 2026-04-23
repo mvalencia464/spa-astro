@@ -7,6 +7,8 @@ interface Props {
 }
 
 const { product } = Astro.props;
+const heroImage = product.heroImage ?? product.gallery[0];
+const thumbImages = [heroImage, ...product.gallery].filter((img, i, arr) => arr.indexOf(img) === i);
 const relatedProducts = product.related
   .map((item) => ({ ...item, full: spaProductBySlug[item.slug] }))
   .filter((item) => item.full);
@@ -43,7 +45,7 @@ const relatedProducts = product.related
 <div class="product-hero">
   <div class="gallery anim-up d1">
     <div class="gallery-main" id="mainImg">
-      <img src={product.gallery[0]} alt={product.heroAlt} id="mainImgEl" loading="eager" fetchpriority="high" />
+      <img src={heroImage} alt={product.heroAlt} id="mainImgEl" loading="eager" fetchpriority="high" />
       <div class="img-badges">
         <span class="img-badge badge-energy">ENERGY STAR</span>
         <span class="img-badge badge-usa">★ Made in USA</span>
@@ -53,7 +55,7 @@ const relatedProducts = product.related
 
     <div class="gallery-thumbs" id="thumbs">
       {
-        product.gallery.map((image, i) => (
+        thumbImages.map((image, i) => (
           <div class={`thumb ${i === 0 ? 'active' : ''}`} data-src={image}>
             <img src={image} alt={`${product.name} view ${i + 1}`} loading="lazy" />
           </div>
@@ -190,7 +192,7 @@ const relatedProducts = product.related
 
       <div>
         <div class="specs-diagram">
-          <img src={product.gallery[1] ?? product.gallery[0]} alt={`${product.name} top-down view`} loading="lazy" />
+          <img src={thumbImages[1] ?? thumbImages[0]} alt={`${product.name} top-down view`} loading="lazy" />
           <div class="specs-diagram-overlay"></div>
           <p class="specs-diagram-label">{product.specDiagramLabel}</p>
         </div>
