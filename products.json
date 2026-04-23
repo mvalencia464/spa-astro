@@ -1,0 +1,172 @@
+{
+  "Artesian_Elite_Series": {
+    "Shared_Features": {
+      "Standard": [
+        "Enhanced Warranty",
+        "Clear Dual Footblaster Jets",
+        "WiFi",
+        "Full Foam with PermaBase ABS Pan",
+        "Ozone",
+        "24 in. AllegroFall",
+        "(4) BellagioFalls",
+        "DynaBrite Elite LED",
+        "DIRECTFLOW Personal Control System",
+        "SpaTouch Topside",
+        "Midnight Glow LED"
+      ],
+      "Options": [
+        "Premium Stereo Systems",
+        "Diamond AOP",
+        "Crystal Propure"
+      ],
+      "Cabinet_Colors": [
+        "Smoke",
+        "Noir",
+        "Mocha"
+      ],
+      "source_citations": [10, 14, 26, 43, 47, 59]
+    },
+    "Models": [
+      {
+        "Name": "Pelican Bay",
+        "Specs": {
+          "Seating": "9 seats",
+          "Size": "108 x 91 x 42 in",
+          "Jets": 71,
+          "Dry_Weight": "1,210 lbs",
+          "Capacity": "505 gal",
+          "Heater": "5.5 kW (60 Hz) / 3.0 kW Export (50 Hz)",
+          "Pumps": "(5) 3.0 BHP (1.5 HP cont.) 1-spd; (2) .6 BHP (.3 HP) Circ. Pump"
+        },
+        "source_citations": [2, 4, 5, 9]
+      },
+      {
+        "Name": "Dove Canyon",
+        "Specs": {
+          "Seating": "6 seats",
+          "Size": "91 x 91 x 42 in",
+          "Jets": 67,
+          "Dry_Weight": "1,050 lbs",
+          "Capacity": "410 gal",
+          "Heater": "5.5 kW (60 Hz) / 3.0 kW Export (50 Hz)",
+          "Pumps": "(5) 3.0 BHP (1.5 HP cont.) 1-spd; (2) .6 BHP (.3 HP) Circ. Pump"
+        },
+        "source_citations": [37, 39, 42]
+      }
+    ]
+  },
+  "Island_Series": {
+    "Shared_Cabinet_Colors": [
+      "Grey",
+      "Black",
+      "Brown",
+      "Tapestry"
+    ],
+    "Models": [
+      {
+        "Name": "Bimini",
+        "Elite_Tier": {
+          "Specs": {
+            "Seating": "9 seats",
+            "Size": "91 x 132 x 36 in",
+            "Jets": 72,
+            "Dry_Weight": "1,225 lbs",
+            "Capacity": "683 gal",
+            "Pumps": "(1) 6.0 BHP 1-spd; (3) 3.0 BHP 1-spd"
+          },
+          "Standard_Features": [
+            "Circ Pump",
+            "Dual Cascade Falls",
+            "Corner Kickrail Glow Light",
+            "Full Foam Insulation",
+            "Elite Interior & Exterior Lighting",
+            "Ozone",
+            "DirectFlow Personal Control",
+            "Extended Warranty",
+            "Branded Foam Floor"
+          ],
+          "source_citations": [189, 191, 193, 197, 199]
+        },
+        "Luxury_Tier": {
+          "Specs": {
+            "Seating": "9 seats",
+            "Jets": 60,
+            "Dry_Weight": "1,225 lbs",
+            "Capacity": "683 gal",
+            "Pumps": "(2) 6.0 BHP 1-spd; (1) 5.0 BHP 1-spd"
+          },
+          "Standard_Features": [
+            "Circ Pump",
+            "Dual Cascade Falls",
+            "Corner Kickrail Glow Light",
+            "Full Foam Insulation",
+            "Premium Interior Lighting",
+            "Ozone",
+            "Enhanced 3rd Pump + Footblasters",
+            "Branded Foam Floor"
+          ],
+          "source_citations": [230, 232, 237, 239]
+        }
+      }
+    ]
+  },
+  "South_Seas_Series": {
+    "Models": [
+      {
+        "Name": "965 L DLX",
+        "Specs": {
+          "Seating": "8 seats",
+          "Size": "108 x 91 x 36 in",
+          "Jets": 65,
+          "Dry_Weight": "981 lbs",
+          "Capacity": "525 gal",
+          "Heater": "5.5 kW (60 Hz)",
+          "Pumps": "(1) 5.0 BHP 2-spd; (1) 5.0 BHP 1-spd; (1) 3.0 BHP 1-spd"
+        },
+        "Standard_Features": [
+          "All Seasons Shield Covers",
+          "ArcticPac Insulation with ABS Bottom",
+          "Stainless Steel Jets",
+          "50 sq. ft. Filter",
+          "Pillowfall LED",
+          "DynaStar LED"
+        ],
+        "Cabinet_Colors": [
+          "Grey",
+          "Charcoal Black",
+          "Java"
+        ],
+        "source_citations": [1156, 1158, 1159, 1160, 1161, 1162, 1163, 1170]
+      }
+    ]
+  },
+  "Garden_Series": {
+    "Shared_Features": {
+      "Standard": [
+        "All Seasons Shield Cover",
+        "ArcticPac Insulation with ABS Bottom",
+        "Stainless Steel Jets",
+        "GFCI Cord (15ft 120 V)",
+        "35 sq. ft. Filter",
+        "1 Blue LED"
+      ],
+      "source_citations": [1609, 1610, 1611, 1612, 1613, 1614, 1615]
+    },
+    "Models": [
+      {
+        "Name": "Wisteria",
+        "Specs": {
+          "Seating": "6 seats",
+          "Size": "84 x 84 x 36 in",
+          "Jets": 27,
+          "Dry_Weight": "730 lbs",
+          "Capacity": "330 gal",
+          "Heater": "1.0 kW @ 120 V / 4.0 kW @ 240 V",
+          "Electrical": "120 V/20 A or 240V/40 A",
+          "Pumps": "1.5 BHP 2-spd 120 V"
+        },
+        "source_citations": [1603, 1605]
+      }
+    ]
+  }
+}

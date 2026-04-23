@@ -1,4 +1,22 @@
 ---
+import { spaProducts } from '../data/spaProducts';
+
+const preferredOrder = ['mystique', 'bimini', 'isla-margarita', 'grand-cayman', 'antigua'];
+const orderIndex = new Map(preferredOrder.map((slug, index) => [slug, index]));
+
+const orderedProducts = [...spaProducts]
+  .filter((product) => product.gallery.length > 0)
+  .sort((a, b) => {
+    const aOrder = orderIndex.get(a.slug) ?? Number.MAX_SAFE_INTEGER;
+    const bOrder = orderIndex.get(b.slug) ?? Number.MAX_SAFE_INTEGER;
+    if (aOrder !== bOrder) return aOrder - bOrder;
+    return a.name.localeCompare(b.name);
+  });
+
+const featuredProduct = orderedProducts[0];
+const primaryCards = orderedProducts.slice(1, 5);
+const secondaryCards = orderedProducts.slice(5, 11);
+const seriesLabel = (series: string) => series.split('·')[0].trim();
 ---
 
 <nav id="nav">
@@ -130,132 +148,59 @@
     </div>
 
     <div class="collections-grid" id="spasGrid">
+      {
+        featuredProduct && (
+          <a href={`/spas/${featuredProduct.slug}`} class="col-card">
+            <img src={featuredProduct.gallery[0]} alt={featuredProduct.name} loading="eager"/>
+            <div class="col-card-overlay"></div>
+            <div class="col-card-body">
+              <p class="col-card-series">Featured · {seriesLabel(featuredProduct.series)}</p>
+              <div class="col-card-name">{featuredProduct.name}</div>
+            </div>
+            <div class="col-card-arrow">
+              <svg width="14" height="14" fill="none" viewBox="0 0 24 24" stroke="white" stroke-width="2.5">
+                <path stroke-linecap="round" stroke-linejoin="round" d="M17 8l4 4m0 0l-4 4m4-4H3"/>
+              </svg>
+            </div>
+          </a>
+        )
+      }
 
-      <!-- Featured large card -->
-      <a href="/spas/mystique" class="col-card">
-        <img src="https://media.stokeleads.com/spas/island-elite/2025_20Bimini_20Elite.webp" alt="Mystique" loading="eager"/>
-        <div class="col-card-overlay"></div>
-        <div class="col-card-body">
-          <p class="col-card-series">Featured · Island Series</p>
-          <div class="col-card-name">Mystique</div>
-        </div>
-        <div class="col-card-arrow">
-          <svg width="14" height="14" fill="none" viewBox="0 0 24 24" stroke="white" stroke-width="2.5">
-            <path stroke-linecap="round" stroke-linejoin="round" d="M17 8l4 4m0 0l-4 4m4-4H3"/>
-          </svg>
-        </div>
-      </a>
-
-      <!-- Smaller cards -->
-      <a href="#contact" class="col-card">
-        <img src="https://media.stokeleads.com/spas/island-elite/2025_20Captiva_Elite.webp" alt="Monarque" loading="lazy"/>
-        <div class="col-card-overlay"></div>
-        <div class="col-card-body">
-          <p class="col-card-series">Prestige Series</p>
-          <div class="col-card-name">Monarque</div>
-        </div>
-        <div class="col-card-arrow">
-          <svg width="14" height="14" fill="none" viewBox="0 0 24 24" stroke="white" stroke-width="2.5">
-            <path stroke-linecap="round" stroke-linejoin="round" d="M17 8l4 4m0 0l-4 4m4-4H3"/>
-          </svg>
-        </div>
-      </a>
-
-      <a href="#contact" class="col-card">
-        <img src="https://media.stokeleads.com/spas/island-elite/2025_20Cayman_Luxury.webp" alt="Prestige" loading="lazy"/>
-        <div class="col-card-overlay"></div>
-        <div class="col-card-body">
-          <p class="col-card-series">Prestige Series</p>
-          <div class="col-card-name">Prestige</div>
-        </div>
-        <div class="col-card-arrow">
-          <svg width="14" height="14" fill="none" viewBox="0 0 24 24" stroke="white" stroke-width="2.5">
-            <path stroke-linecap="round" stroke-linejoin="round" d="M17 8l4 4m0 0l-4 4m4-4H3"/>
-          </svg>
-        </div>
-      </a>
-
-      <a href="#contact" class="col-card">
-        <img src="https://media.stokeleads.com/spas/island-elite/2025_20Cayman_Essential.webp" alt="Rendezvous" loading="lazy"/>
-        <div class="col-card-overlay"></div>
-        <div class="col-card-body">
-          <p class="col-card-series">Prestige Series</p>
-          <div class="col-card-name">Rendezvous</div>
-        </div>
-        <div class="col-card-arrow">
-          <svg width="14" height="14" fill="none" viewBox="0 0 24 24" stroke="white" stroke-width="2.5">
-            <path stroke-linecap="round" stroke-linejoin="round" d="M17 8l4 4m0 0l-4 4m4-4H3"/>
-          </svg>
-        </div>
-      </a>
-
-      <a href="#contact" class="col-card">
-        <img src="https://media.stokeleads.com/spas/island-elite/2025_20Antigua_Elite.webp" alt="Riviera" loading="lazy"/>
-        <div class="col-card-overlay"></div>
-        <div class="col-card-body">
-          <p class="col-card-series">Prestige Series</p>
-          <div class="col-card-name">Riviera</div>
-        </div>
-        <div class="col-card-arrow">
-          <svg width="14" height="14" fill="none" viewBox="0 0 24 24" stroke="white" stroke-width="2.5">
-            <path stroke-linecap="round" stroke-linejoin="round" d="M17 8l4 4m0 0l-4 4m4-4H3"/>
-          </svg>
-        </div>
-      </a>
-
+      {
+        primaryCards.map((product) => (
+          <a href={`/spas/${product.slug}`} class="col-card">
+            <img src={product.gallery[0]} alt={product.name} loading="lazy"/>
+            <div class="col-card-overlay"></div>
+            <div class="col-card-body">
+              <p class="col-card-series">{seriesLabel(product.series)}</p>
+              <div class="col-card-name">{product.name}</div>
+            </div>
+            <div class="col-card-arrow">
+              <svg width="14" height="14" fill="none" viewBox="0 0 24 24" stroke="white" stroke-width="2.5">
+                <path stroke-linecap="round" stroke-linejoin="round" d="M17 8l4 4m0 0l-4 4m4-4H3"/>
+              </svg>
+            </div>
+          </a>
+        ))
+      }
     </div>
 
-    <!-- Second row of models -->
-    <div style="display:grid;grid-template-columns:repeat(6,1fr);gap:12px;margin-top:12px;" id="moreModels">
-      <a href="#contact" class="col-card" style="aspect-ratio:1/1">
-        <img src="https://media.stokeleads.com/spas/island-elite/2025_20Captiva_Luxury.webp" alt="Salon" loading="lazy"/>
-        <div class="col-card-overlay"></div>
-        <div class="col-card-body" style="padding:12px">
-          <p class="col-card-series" style="font-size:9px">Prestige</p>
-          <div class="col-card-name" style="font-size:18px">Salon</div>
+    {
+      secondaryCards.length > 0 && (
+        <div style="display:grid;grid-template-columns:repeat(6,1fr);gap:12px;margin-top:12px;" id="moreModels">
+          {secondaryCards.map((product) => (
+            <a href={`/spas/${product.slug}`} class="col-card" style="aspect-ratio:1/1">
+              <img src={product.gallery[0]} alt={product.name} loading="lazy"/>
+              <div class="col-card-overlay"></div>
+              <div class="col-card-body" style="padding:12px">
+                <p class="col-card-series" style="font-size:9px">{seriesLabel(product.series)}</p>
+                <div class="col-card-name" style="font-size:18px">{product.name}</div>
+              </div>
+            </a>
+          ))}
         </div>
-      </a>
-      <a href="#contact" class="col-card" style="aspect-ratio:1/1">
-        <img src="https://media.stokeleads.com/spas/island-elite/2025_20Antigua_Essential.webp" alt="Sensation" loading="lazy"/>
-        <div class="col-card-overlay"></div>
-        <div class="col-card-body" style="padding:12px">
-          <p class="col-card-series" style="font-size:9px">Prestige</p>
-          <div class="col-card-name" style="font-size:18px">Sensation</div>
-        </div>
-      </a>
-      <a href="#contact" class="col-card" style="aspect-ratio:1/1">
-        <img src="https://media.stokeleads.com/spas/island-elite/2022_IslandSpas_TranquilityFall.webp" alt="Tahiti" loading="lazy"/>
-        <div class="col-card-overlay"></div>
-        <div class="col-card-body" style="padding:12px">
-          <p class="col-card-series" style="font-size:9px">Island</p>
-          <div class="col-card-name" style="font-size:18px">Tahiti</div>
-        </div>
-      </a>
-      <a href="#contact" class="col-card" style="aspect-ratio:1/1">
-        <img src="https://media.stokeleads.com/spas/island-elite/2025_20Bahama_Essential.webp" alt="Maui" loading="lazy"/>
-        <div class="col-card-overlay"></div>
-        <div class="col-card-body" style="padding:12px">
-          <p class="col-card-series" style="font-size:9px">Island</p>
-          <div class="col-card-name" style="font-size:18px">Maui</div>
-        </div>
-      </a>
-      <a href="#contact" class="col-card" style="aspect-ratio:1/1">
-        <img src="https://media.stokeleads.com/spas/island-elite/2025_20Bahama_Luxury.webp" alt="Luxe" loading="lazy"/>
-        <div class="col-card-overlay"></div>
-        <div class="col-card-body" style="padding:12px">
-          <p class="col-card-series" style="font-size:9px">Prestige</p>
-          <div class="col-card-name" style="font-size:18px">Luxe</div>
-        </div>
-      </a>
-      <a href="#contact" class="col-card" style="aspect-ratio:1/1">
-        <img src="https://media.stokeleads.com/spas/island-elite/2025_20Antigua_Luxury.webp" alt="Fiji" loading="lazy"/>
-        <div class="col-card-overlay"></div>
-        <div class="col-card-body" style="padding:12px">
-          <p class="col-card-series" style="font-size:9px">Island</p>
-          <div class="col-card-name" style="font-size:18px">Fiji</div>
-        </div>
-      </a>
-    </div>
+      )
+    }
   </div>
 </section>
 
