@@ -1,6 +1,6 @@
 import { ConvexHttpClient } from "convex/browser";
 import { api } from "../../convex/_generated/api";
-import { spaProducts as localSpaProducts, type SpaProduct } from "../data/spaProducts";
+import type { SpaProduct } from "../data/spaProducts";
 
 type ConvexProductDoc = {
   slug: string;
@@ -56,8 +56,7 @@ function normalizeProduct(doc: ConvexProductDoc): SpaProduct {
 export async function getSpaProducts(): Promise<SpaProduct[]> {
   if (!IS_DEV && cachedProducts) return cachedProducts;
   if (!CONVEX_URL) {
-    if (!IS_DEV) cachedProducts = localSpaProducts;
-    return localSpaProducts;
+    throw new Error("Missing CONVEX_URL. Configure it to load spa products.");
   }
 
   try {
@@ -66,9 +65,10 @@ export async function getSpaProducts(): Promise<SpaProduct[]> {
     const normalized = docs.map(normalizeProduct);
     if (!IS_DEV) cachedProducts = normalized;
     return normalized;
-  } catch {
-    if (!IS_DEV) cachedProducts = localSpaProducts;
-    return localSpaProducts;
+  } catch (error) {
+    throw new Error(
+      `Failed to load products from Convex: ${error instanceof Error ? error.message : "unknown error"}`,
+    );
   }
 }
 

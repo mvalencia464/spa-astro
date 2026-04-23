@@ -9,9 +9,23 @@ interface Props {
 const { product, spaProductBySlug } = Astro.props;
 const heroImage = product.heroImage ?? product.gallery[0];
 const thumbImages = [heroImage, ...product.gallery].filter((img, i, arr) => arr.indexOf(img) === i);
-const relatedProducts = product.related
+const explicitRelatedProducts = product.related
   .map((item) => ({ ...item, full: spaProductBySlug[item.slug] }))
   .filter((item) => item.full);
+const fallbackRelatedProducts = Object.values(spaProductBySlug)
+  .filter((candidate) => candidate.slug !== product.slug)
+  .slice(0, 4)
+  .map((candidate) => ({
+    slug: candidate.slug,
+    series: candidate.series.split('·')[0].trim(),
+    name: candidate.name,
+    meta: `${candidate.quickSpecs.seats} · ${candidate.quickSpecs.jets}`,
+    priceLabel: candidate.startingPrice,
+    image: candidate.heroImage ?? candidate.gallery[0] ?? '',
+    full: candidate
+  }))
+  .filter((item) => item.image);
+const relatedProducts = explicitRelatedProducts.length > 0 ? explicitRelatedProducts : fallbackRelatedProducts;
 ---
 
 <nav>
@@ -49,6 +63,8 @@ const relatedProducts = product.related
   <div class="gallery anim-up d1">
     <div class="gallery-main" id="mainImg">
       <img src={heroImage} alt={product.heroAlt} id="mainImgEl" loading="eager" fetchpriority="high" />
+      <button type="button" class="gallery-nav gallery-nav-prev" id="galleryPrevBtn" aria-label="Previous image">‹</button>
+      <button type="button" class="gallery-nav gallery-nav-next" id="galleryNextBtn" aria-label="Next image">›</button>
       <div class="img-badges">
         <span class="img-badge badge-energy">ENERGY STAR</span>
         <span class="img-badge badge-usa">★ Made in USA</span>

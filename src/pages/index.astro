@@ -31,7 +31,8 @@ import '../styles/home.css';
           if (!canParallax) return;
           const y = window.scrollY;
           if (y < window.innerHeight) {
-            heroBg.style.transform = `scale(1) translateY(${y * 0.08}px)`;
+            const parallaxOffset = Math.min(y * 0.035, 24);
+            heroBg.style.transform = `scale(1.02) translateY(${parallaxOffset}px)`;
           }
         },
         { passive: true }

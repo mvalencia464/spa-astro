@@ -29,27 +29,4 @@ export default defineSchema({
   })
     .index("by_productSlug", ["productSlug"])
     .index("by_imageName", ["imageName"]),
-
-  stores: defineTable({
-    slug: v.string(),
-    name: v.string(),
-    websiteUrl: v.optional(v.string()),
-    city: v.optional(v.string()),
-    state: v.optional(v.string()),
-    phone: v.optional(v.string()),
-    active: v.boolean(),
-  }).index("by_slug", ["slug"]),
-
-  storeProductOverrides: defineTable({
-    storeId: v.id("stores"),
-    productSlug: v.string(),
-    visible: v.boolean(),
-    featured: v.boolean(),
-    priceLabel: v.optional(v.string()),
-    notes: v.optional(v.string()),
-    heroImageOverride: v.optional(v.string()),
-  })
-    .index("by_storeId", ["storeId"])
-    .index("by_storeId_productSlug", ["storeId", "productSlug"])
-    .index("by_productSlug", ["productSlug"]),
 });

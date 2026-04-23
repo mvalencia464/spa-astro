@@ -28,19 +28,57 @@ if (!product) {
 
   <script is:inline>
     const mainImgEl = document.getElementById('mainImgEl');
+    const thumbs = [...document.querySelectorAll('.thumb')];
+    const prevBtn = document.getElementById('galleryPrevBtn');
+    const nextBtn = document.getElementById('galleryNextBtn');
+
+    function preloadImage(url) {
+      if (!url) return;
+      const img = new Image();
+      img.decoding = 'async';
+      img.src = url;
+    }
+
+    function getActiveIndex() {
+      return Math.max(0, thumbs.findIndex((thumb) => thumb.classList.contains('active')));
+    }
+
+    function setActiveImage(index) {
+      if (!mainImgEl || !thumbs.length) return;
+      const total = thumbs.length;
+      const normalized = (index + total) % total;
+      const activeThumb = thumbs[normalized];
+      const src = activeThumb?.dataset?.src;
+      if (!src) return;
+
+      mainImgEl.style.opacity = '0';
+      setTimeout(() => {
+        mainImgEl.src = src;
+        mainImgEl.style.opacity = '1';
+      }, 160);
+
+      thumbs.forEach((thumb, i) => {
+        thumb.classList.toggle('active', i === normalized);
+      });
+
+      const nextSrc = thumbs[(normalized + 1) % total]?.dataset?.src;
+      preloadImage(nextSrc);
+    }
+
     if (mainImgEl) {
-      document.querySelectorAll('.thumb').forEach((thumb) => {
-        thumb.addEventListener('click', () => {
-          const src = thumb.dataset.src;
-          if (!src) return;
-          mainImgEl.style.opacity = '0';
-          setTimeout(() => {
-            mainImgEl.src = src;
-            mainImgEl.style.opacity = '1';
-          }, 200);
-          document.querySelectorAll('.thumb').forEach((t) => t.classList.remove('active'));
-          thumb.classList.add('active');
-        });
+      thumbs.forEach((thumb, i) => {
+        thumb.addEventListener('click', () => setActiveImage(i));
+      });
+
+      prevBtn?.addEventListener('click', () => setActiveImage(getActiveIndex() - 1));
+      nextBtn?.addEventListener('click', () => setActiveImage(getActiveIndex() + 1));
+
+      document.addEventListener('keydown', (event) => {
+        if (event.key !== 'ArrowLeft' && event.key !== 'ArrowRight') return;
+        const target = event.target;
+        if (target instanceof HTMLElement && ['INPUT', 'TEXTAREA', 'SELECT'].includes(target.tagName)) return;
+        if (event.key === 'ArrowLeft') setActiveImage(getActiveIndex() - 1);
+        if (event.key === 'ArrowRight') setActiveImage(getActiveIndex() + 1);
       });
     }
 

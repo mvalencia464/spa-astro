@@ -8,8 +8,10 @@
     "build": "astro build",
     "preview": "astro preview",
     "convex:dev": "convex dev",
+    "convex:codegen": "convex codegen",
     "convex:deploy": "convex deploy",
-    "convex:seed": "convex run products:seedProducts"
+    "convex:seed": "convex run products:seedProducts",
+    "convex:reset": "convex run products:resetProducts"
   },
   "dependencies": {
     "astro": "^5.7.0",

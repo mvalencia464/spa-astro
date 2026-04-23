@@ -1,0 +1,71 @@
+---
+import type { SpaProduct } from '../../data/spaProducts';
+
+interface Props {
+  featuredProduct?: SpaProduct;
+  primaryCards: SpaProduct[];
+  secondaryCards: SpaProduct[];
+  seriesLabel: (series: string) => string;
+}
+
+const { featuredProduct, primaryCards, secondaryCards, seriesLabel } = Astro.props;
+---
+
+<section class="section" id="spas">
+  <div class="section-inner">
+    <div class="collections-header">
+      <div>
+        <p class="section-label">Artesian Spas</p>
+        <h2 class="section-h2">Shop by<br/>Collection</h2>
+      </div>
+      <div>
+        <p class="section-sub">Hand-crafted in Ontario, CA. Every model backed by Artesian's Lifetime structural warranty.</p>
+        <a href="#contact" class="btn-secondary" style="margin-top:20px;display:inline-flex;">View All Models →</a>
+      </div>
+    </div>
+
+    <div class="collections-grid" id="spasGrid">
+      {
+        featuredProduct && (
+          <a href={`/spas/${featuredProduct.slug}`} class="col-card">
+            <img src={featuredProduct.gallery[0]} alt={featuredProduct.name} loading="eager"/>
+            <div class="col-card-overlay"></div>
+            <div class="col-card-body">
+              <p class="col-card-series">Featured · {seriesLabel(featuredProduct.series)}</p>
+              <div class="col-card-name">{featuredProduct.name}</div>
+            </div>
+          </a>
+        )
+      }
+      {
+        primaryCards.map((product) => (
+          <a href={`/spas/${product.slug}`} class="col-card">
+            <img src={product.gallery[0]} alt={product.name} loading="lazy"/>
+            <div class="col-card-overlay"></div>
+            <div class="col-card-body">
+              <p class="col-card-series">{seriesLabel(product.series)}</p>
+              <div class="col-card-name">{product.name}</div>
+            </div>
+          </a>
+        ))
+      }
+    </div>
+
+    {
+      secondaryCards.length > 0 && (
+        <div style="display:grid;grid-template-columns:repeat(6,1fr);gap:12px;margin-top:12px;" id="moreModels">
+          {secondaryCards.map((product) => (
+            <a href={`/spas/${product.slug}`} class="col-card" style="aspect-ratio:1/1">
+              <img src={product.gallery[0]} alt={product.name} loading="lazy"/>
+              <div class="col-card-overlay"></div>
+              <div class="col-card-body" style="padding:12px">
+                <p class="col-card-series" style="font-size:9px">{seriesLabel(product.series)}</p>
+                <div class="col-card-name" style="font-size:18px">{product.name}</div>
+              </div>
+            </a>
+          ))}
+        </div>
+      )
+    }
+  </div>
+</section>
