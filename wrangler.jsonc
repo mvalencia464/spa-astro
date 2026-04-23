@@ -2,7 +2,5 @@
   "$schema": "./node_modules/wrangler/config-schema.json",
   "name": "spa-astro",
   "compatibility_date": "2026-04-23",
-  "assets": {
-    "directory": "./dist"
-  }
+  "pages_build_output_dir": "./dist"
 }
