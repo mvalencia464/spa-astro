@@ -103,7 +103,7 @@
   }
   .hero-bg {
     position: absolute; inset: 0;
-    background-image: url('https://media.stokeleads.com/spas/island-elite/2022_IslandSpas_TranquilityFall.webp');
+    background-image: url('https://media.stokeleads.com/spas/island-elite/2025_20Island_20(24).webp');
     background-size: cover; background-position: center 30%;
     transform: scale(1.05);
     transition: transform 8s ease-out;
@@ -430,7 +430,7 @@
   }
   .about-bg {
     position: absolute; inset: 0;
-    background-image: url('https://media.stokeleads.com/spas/island-elite/2025_20Bahama_Luxury.webp');
+    background-image: url('https://media.stokeleads.com/spas/island-elite/2025_20Island_20(45).webp');
     background-size: cover; background-position: center;
     opacity: 0.15;
   }

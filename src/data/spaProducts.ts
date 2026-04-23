@@ -193,6 +193,36 @@ const cabinetGradientMap: Record<string, string> = {
   tapestry: 'linear-gradient(135deg, #847766, #5d5346)'
 };
 
+const islandLifestyleImages = [
+  'https://media.stokeleads.com/spas/island-elite/2025_20Island_20(5).webp',
+  'https://media.stokeleads.com/spas/island-elite/2025_20Island_20(7).webp',
+  'https://media.stokeleads.com/spas/island-elite/2025_20Island_20(20).webp',
+  'https://media.stokeleads.com/spas/island-elite/2025_20Island_20(24).webp',
+  'https://media.stokeleads.com/spas/island-elite/2025_20Island_20(32).webp',
+  'https://media.stokeleads.com/spas/island-elite/2025_20Island_20(45).webp',
+  'https://media.stokeleads.com/spas/island-elite/2025_20Island_20(46).webp',
+  'https://media.stokeleads.com/spas/island-elite/2025_20Island_20(58).webp',
+  'https://media.stokeleads.com/spas/island-elite/2025_20Island_20(61).webp',
+  'https://media.stokeleads.com/spas/island-elite/2025_20Island_20(62).webp',
+  'https://media.stokeleads.com/spas/island-elite/2025_20Island_20(63).webp',
+  'https://media.stokeleads.com/spas/island-elite/2025_20Island_20(64).webp',
+  'https://media.stokeleads.com/spas/island-elite/2025_20Island.webp'
+];
+
+function lifestyleForSlug(slug: string, count = 2): string[] {
+  let seed = 0;
+  for (const ch of slug) seed += ch.charCodeAt(0);
+  const picked: string[] = [];
+  for (let i = 0; i < count; i++) {
+    picked.push(islandLifestyleImages[(seed + i * 3) % islandLifestyleImages.length]);
+  }
+  return picked;
+}
+
+function uniqueStrings(values: string[]): string[] {
+  return [...new Set(values)];
+}
+
 function slugifyName(name: string): string {
   return name
     .toLowerCase()
@@ -888,5 +918,8 @@ const mergedProducts = new Map<string, SpaProduct>();
 for (const product of allProducts) mergedProducts.set(product.slug, product);
 
 export const spaProducts = [...mergedProducts.values()];
+for (const product of spaProducts) {
+  product.gallery = uniqueStrings([...product.gallery, ...lifestyleForSlug(product.slug, 2)]);
+}
 export const spaProductBySlug = Object.fromEntries(spaProducts.map((product) => [product.slug, product]));
 export const logoImage = brandImage('logo.webp');
