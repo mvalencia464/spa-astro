@@ -1,12 +1,12 @@
 ---
 import type { SpaProduct } from '../data/spaProducts';
-import { logoImage, spaProductBySlug } from '../data/spaProducts';
 
 interface Props {
   product: SpaProduct;
+  spaProductBySlug: Record<string, SpaProduct>;
 }
 
-const { product } = Astro.props;
+const { product, spaProductBySlug } = Astro.props;
 const heroImage = product.heroImage ?? product.gallery[0];
 const thumbImages = [heroImage, ...product.gallery].filter((img, i, arr) => arr.indexOf(img) === i);
 const relatedProducts = product.related
@@ -16,7 +16,10 @@ const relatedProducts = product.related
 
 <nav>
   <a href="/" class="nav-logo">
-    <img src={logoImage} alt="Family Pool & Spa" />
+    <span class="nav-logo-text">
+      <span class="nav-logo-main">Family Pool</span>
+      <span class="nav-logo-accent">&amp; Spa</span>
+    </span>
   </a>
   <ul class="nav-links">
     <li><a href="/#spas">Shop Spas</a></li>

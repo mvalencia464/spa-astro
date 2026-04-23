@@ -1,5 +1,7 @@
 ---
-import { spaProducts } from '../data/spaProducts';
+import { getSpaProducts } from '../lib/productsData';
+
+const spaProducts = await getSpaProducts();
 
 const preferredOrder = ['mystique', 'bimini', 'isla-margarita', 'grand-cayman', 'grand-bahama', 'antigua', 'captiva', 'nevis', 'santa-cruz'];
 const orderIndex = new Map(preferredOrder.map((slug, index) => [slug, index]));
@@ -21,7 +23,10 @@ const seriesLabel = (series: string) => series.split('·')[0].trim();
 
 <nav id="nav">
   <a href="/" class="nav-logo">
-    <img src="https://media.stokeleads.com/test/logo.webp" alt="Family Pool & Spa" loading="eager"/>
+    <span class="nav-logo-text">
+      <span class="nav-logo-main">Family Pool</span>
+      <span class="nav-logo-accent">&amp; Spa</span>
+    </span>
   </a>
   <ul class="nav-links">
     <li><a href="#spas">Shop Spas</a></li>

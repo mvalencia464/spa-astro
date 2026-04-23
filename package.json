@@ -6,9 +6,13 @@
     "dev": "astro dev",
     "start": "astro dev",
     "build": "astro build",
-    "preview": "astro preview"
+    "preview": "astro preview",
+    "convex:dev": "convex dev",
+    "convex:deploy": "convex deploy",
+    "convex:seed": "convex run products:seedProducts"
   },
   "dependencies": {
-    "astro": "^5.7.0"
+    "astro": "^5.7.0",
+    "convex": "^1.36.0"
   }
 }

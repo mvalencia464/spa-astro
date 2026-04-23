@@ -74,7 +74,20 @@
   .nav-logo {
     display: flex; align-items: center; gap: 12px; text-decoration: none;
   }
-  .nav-logo img { height: 44px; width: auto; }
+  .nav-logo-text {
+    color: #fff;
+    font-family: var(--font-display);
+    font-size: clamp(24px, 2.4vw, 34px);
+    font-weight: 400;
+    letter-spacing: 0.03em;
+    line-height: 1;
+    white-space: nowrap;
+    display: inline-flex;
+    align-items: baseline;
+    gap: 8px;
+  }
+  .nav-logo-main { color: #fff; }
+  .nav-logo-accent { color: var(--accent2); }
   .nav-links {
     display: flex; align-items: center; gap: 36px;
     list-style: none;
@@ -105,8 +118,8 @@
     position: absolute; inset: 0;
     background-image: url('https://media.stokeleads.com/spas/island-elite/2025_20Island_20(24).webp');
     background-size: cover; background-position: center 30%;
-    transform: scale(1.05);
-    transition: transform 8s ease-out;
+    transform: scale(1.015);
+    transition: transform 4s ease-out;
   }
   .hero-bg.loaded { transform: scale(1); }
   .hero-overlay {
@@ -602,6 +615,7 @@
     nav.scrolled { padding: 12px 24px; }
     .nav-links, .nav-cta { display: none; }
     .nav-hamburger { display: flex; }
+    .nav-logo-text { font-size: 24px; letter-spacing: 0.02em; }
     .section { padding: 72px 24px; }
     .hero-content { padding: 0 24px; padding-top: 100px; }
     .hero-h1 { font-size: clamp(56px, 14vw, 80px); }
@@ -619,4 +633,12 @@
     .mobile-sticky { display: block; }
     body { padding-bottom: 64px; }
     .form-row { grid-template-columns: 1fr; }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .hero-bg,
+    .hero-bg.loaded {
+      transform: none;
+      transition: none;
+    }
   }

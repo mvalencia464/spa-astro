@@ -2,15 +2,18 @@
 import BaseLayout from '../../layouts/BaseLayout.astro';
 import ProductContent from '../../components/ProductContent.astro';
 import '../../styles/mystique.css';
-import { spaProducts, spaProductBySlug } from '../../data/spaProducts';
+import { getSpaProductBySlug, getSpaProducts } from '../../lib/productsData';
 
-export function getStaticPaths() {
+export async function getStaticPaths() {
+  const spaProducts = await getSpaProducts();
   return spaProducts.map((product) => ({
     params: { slug: product.slug }
   }));
 }
 
-const product = spaProductBySlug[Astro.params.slug ?? ''];
+const products = await getSpaProducts();
+const spaProductBySlug = Object.fromEntries(products.map((product) => [product.slug, product]));
+const product = await getSpaProductBySlug(Astro.params.slug ?? '');
 
 if (!product) {
   throw new Error(`Unknown spa product slug: ${Astro.params.slug}`);
@@ -21,7 +24,7 @@ if (!product) {
   title={`${product.name} — Island Elite Spas | Family Pool & Spa · Boise, ID`}
   description={`${product.name} hot tub from the Island Elite collection — features, specifications, and warranty details.`}
 >
-  <ProductContent product={product} />
+  <ProductContent product={product} spaProductBySlug={spaProductBySlug} />
 
   <script is:inline>
     const mainImgEl = document.getElementById('mainImgEl');

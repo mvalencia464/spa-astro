@@ -23,12 +23,15 @@ import '../styles/home.css';
     const heroBg = document.getElementById('heroBg');
     if (heroBg) {
       heroBg.classList.add('loaded');
+      const reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+      const canParallax = window.matchMedia('(min-width: 1024px)').matches && !reduceMotion;
       window.addEventListener(
         'scroll',
         () => {
+          if (!canParallax) return;
           const y = window.scrollY;
           if (y < window.innerHeight) {
-            heroBg.style.transform = `scale(1) translateY(${y * 0.25}px)`;
+            heroBg.style.transform = `scale(1) translateY(${y * 0.08}px)`;
           }
         },
         { passive: true }
