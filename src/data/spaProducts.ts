@@ -122,6 +122,20 @@ const islandModelImageMap: Record<string, string[]> = {
     'https://media.stokeleads.com/spas/island-elite/2025_20Bahama_Essential.webp',
     'https://media.stokeleads.com/spas/island-elite/2022_IslandSpas_TranquilityFall.webp'
   ],
+  bahama: [
+    'https://media.stokeleads.com/spas/island-elite/2025_20Bahama_Elite.webp',
+    'https://media.stokeleads.com/spas/island-elite/2025_20Bahama_Luxury.webp',
+    'https://media.stokeleads.com/spas/island-elite/2025_20Bahama_Essential.webp',
+    'https://media.stokeleads.com/spas/island-elite/2025_20Cayman_Elite.webp',
+    'https://media.stokeleads.com/spas/island-elite/2022_IslandSpas_TranquilityFall.webp'
+  ],
+  captiva: [
+    'https://media.stokeleads.com/spas/island-elite/2025_20Captiva_Elite.webp',
+    'https://media.stokeleads.com/spas/island-elite/2025_20Captiva_Luxury.webp',
+    'https://media.stokeleads.com/spas/island-elite/2025_20Captiva_Essential.webp',
+    'https://media.stokeleads.com/spas/island-elite/2025_20Antigua_Elite.webp',
+    'https://media.stokeleads.com/spas/island-elite/2022_IslandSpas_TranquilityFall.webp'
+  ],
   'isla-margarita': [
     'https://media.stokeleads.com/spas/island-elite/2025_20Bahama_Elite.webp',
     'https://media.stokeleads.com/spas/island-elite/2025_20Bahama_Luxury.webp',
@@ -377,6 +391,99 @@ function buildIslandProductsFromJson2026(): SpaProduct[] {
   });
 }
 
+function buildImageOnlyIslandModel(slug: string, name: string): SpaProduct {
+  const gallery = islandModelImageMap[slug] ?? islandModelImageMap.bimini;
+  return {
+    slug,
+    name,
+    series: 'Island Elite Series · Artesian Spas',
+    model: 'Hydrotherapy Spa · Specs by Trim',
+    startingPrice: 'Call for Pricing',
+    heroAlt: `Artesian ${name} Hot Tub`,
+    gallery,
+    quickSpecs: {
+      seats: 'Seats Vary',
+      jets: 'Jets Vary',
+      dimensions: 'Dimensions Vary',
+      gallons: 'Capacity Varies'
+    },
+    features: [
+      {
+        tag: 'Hydrotherapy',
+        title: `${name} Elite Hydrotherapy`,
+        description: `${name} is available with Island Elite therapy layouts for full-body comfort and pressure relief.`
+      },
+      {
+        tag: 'Performance',
+        title: 'DirectFlow Personal Control',
+        description: 'Control and rebalance water pressure across seats with DirectFlow personal control technology.'
+      },
+      {
+        tag: 'Construction',
+        title: 'All-Season Build',
+        description: 'Full-foam insulation and premium cabinet construction designed for year-round use.'
+      }
+    ],
+    signature: {
+      title: `${name} Island Elite Configuration`,
+      description: `${name} combines premium trim options, multi-zone hydrotherapy, and refined Island-series styling.`,
+      stats: [
+        { value: 'Elite', label: 'Trim Option' },
+        { value: 'Luxury', label: 'Trim Option' },
+        { value: 'Essential', label: 'Trim Option' }
+      ],
+      image: gallery[1] ?? gallery[0]
+    },
+    specSections: [
+      {
+        title: 'Dimensions & Capacity',
+        rows: [
+          ['Seating Capacity', 'Varies by trim'],
+          ['Dimensions (L × W × H)', 'See dealer spec sheet'],
+          ['Water Capacity', 'See dealer spec sheet'],
+          ['Dry Weight', 'See dealer spec sheet']
+        ]
+      },
+      {
+        title: 'Jet System',
+        rows: [
+          ['Total Jets', 'Varies by trim'],
+          ['Control', 'DirectFlow Personal Control'],
+          ['Water Feature', 'Cascade Falls'],
+          ['Ozone', 'Included']
+        ]
+      },
+      {
+        title: 'Electrical & Build',
+        rows: [
+          ['Pump Configuration', 'Varies by trim'],
+          ['Insulation', 'Full Foam'],
+          ['Lighting', 'Elite/Luxury/Essential by trim'],
+          ['Warranty', 'See dealer for full details']
+        ]
+      }
+    ],
+    specDiagramLabel: `${name} · Island Elite`,
+    specHighlights: [
+      { value: 'Elite', label: 'Trim' },
+      { value: 'Luxury', label: 'Trim' },
+      { value: 'Essential', label: 'Trim' },
+      { value: '104°', label: 'Max Temp' }
+    ],
+    shellColors: [
+      { name: 'Silver Marble', gradient: 'linear-gradient(135deg, #c0c8d0, #8898a4)' },
+      { name: 'White Pearl', gradient: 'linear-gradient(135deg, #f5f0eb, #e2ddd6)' },
+      { name: 'Midnight Canyon', gradient: 'linear-gradient(135deg, #1a2535, #0e1820)' }
+    ],
+    cabinetColors: [
+      { name: 'Grey', gradient: 'linear-gradient(135deg, #6b7a8a, #4a5568)' },
+      { name: 'Black', gradient: 'linear-gradient(135deg, #2a2e34, #0f1114)' },
+      { name: 'Brown', gradient: 'linear-gradient(135deg, #8b6340, #6b4a2a)' }
+    ],
+    related: []
+  };
+}
+
 export const spaProducts: SpaProduct[] = [
   {
     slug: 'mystique',
@@ -603,6 +710,19 @@ const json2026IslandProducts = buildIslandProductsFromJson2026();
 for (const product of json2026IslandProducts) {
   if (!spaProducts.some((p) => p.slug === product.slug)) {
     spaProducts.push(product);
+  }
+}
+
+const imageOnlyIslandModels: Array<[string, string]> = [
+  ['grand-cayman', 'Grand Cayman'],
+  ['antigua', 'Antigua'],
+  ['captiva', 'Captiva'],
+  ['bahama', 'Bahama']
+];
+
+for (const [slug, name] of imageOnlyIslandModels) {
+  if (!spaProducts.some((p) => p.slug === slug)) {
+    spaProducts.push(buildImageOnlyIslandModel(slug, name));
   }
 }
 
