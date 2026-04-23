@@ -1,6 +1,7 @@
 import { brandImage } from '../lib/media';
 import productsJson from '../../products.json';
 import products2Json from '../../products2.json';
+import islandJson from '../../island.json';
 
 export interface ProductFeature {
   tag: string;
@@ -99,6 +100,32 @@ const parsedProducts2 = products2Json as {
     };
   };
 };
+const parsedIsland = islandJson as {
+  Artesian_Spas_2026_Catalog?: {
+    Island_Series?: {
+      Shared_Cabinet_Colors?: string[];
+      Shared_Specifications?: {
+        Heater?: string;
+      };
+      Popular_Options?: string[];
+      Models?: Array<{
+        Name: string;
+        Elite_Trim?: {
+          Specs?: Record<string, string | number>;
+          Standard_Features?: string[];
+        };
+        Luxury_Trim?: {
+          Specs?: Record<string, string | number>;
+          Standard_Features?: string[];
+        };
+        Essential_Trim?: {
+          Specs?: Record<string, string | number>;
+          Standard_Features?: string[];
+        };
+      }>;
+    };
+  };
+};
 
 const islandModelImageMap: Record<string, string[]> = {
   bimini: [
@@ -134,6 +161,20 @@ const islandModelImageMap: Record<string, string[]> = {
     'https://media.stokeleads.com/spas/island-elite/2025_20Captiva_Luxury.webp',
     'https://media.stokeleads.com/spas/island-elite/2025_20Captiva_Essential.webp',
     'https://media.stokeleads.com/spas/island-elite/2025_20Antigua_Elite.webp',
+    'https://media.stokeleads.com/spas/island-elite/2022_IslandSpas_TranquilityFall.webp'
+  ],
+  nevis: [
+    'https://media.stokeleads.com/spas/island-elite/2025_20Captiva_Luxury.webp',
+    'https://media.stokeleads.com/spas/island-elite/2025_20Captiva_Essential.webp',
+    'https://media.stokeleads.com/spas/island-elite/2025_20Antigua_Luxury.webp',
+    'https://media.stokeleads.com/spas/island-elite/2025_20Cayman_Essential.webp',
+    'https://media.stokeleads.com/spas/island-elite/2022_IslandSpas_TranquilityFall.webp'
+  ],
+  'santa-cruz': [
+    'https://media.stokeleads.com/spas/island-elite/2025_20Antigua_Essential.webp',
+    'https://media.stokeleads.com/spas/island-elite/2025_20Captiva_Essential.webp',
+    'https://media.stokeleads.com/spas/island-elite/2025_20Bahama_Essential.webp',
+    'https://media.stokeleads.com/spas/island-elite/2025_20Cayman_Essential.webp',
     'https://media.stokeleads.com/spas/island-elite/2022_IslandSpas_TranquilityFall.webp'
   ],
   'isla-margarita': [
@@ -391,6 +432,129 @@ function buildIslandProductsFromJson2026(): SpaProduct[] {
   });
 }
 
+function buildIslandProductsFromIslandJson(): SpaProduct[] {
+  const islandSeries = parsedIsland.Artesian_Spas_2026_Catalog?.Island_Series;
+  if (!islandSeries?.Models?.length) return [];
+
+  const heater = islandSeries.Shared_Specifications?.Heater ?? '5.5 kW (60 Hz)';
+  const popularOptions = islandSeries.Popular_Options ?? [];
+  const cabinetColors =
+    islandSeries.Shared_Cabinet_Colors?.map((name) => ({
+      name,
+      gradient: cabinetGradientMap[name.toLowerCase()] ?? 'linear-gradient(135deg, #6b7a8a, #4a5568)'
+    })) ?? [];
+
+  const modelImageKey: Record<string, string> = {
+    'grand-bahama': 'bahama'
+  };
+
+  const trimSpecsRows = (specs: Record<string, string | number> | undefined): Array<[string, string]> => [
+    ['Seating Capacity', String(specs?.Seating ?? 'Varies')],
+    ['Dimensions (L × W × H)', toDimensionText(specs?.Size as string | number | undefined)],
+    ['Total Jets', specs?.Jets ? `${specs.Jets} Jets` : 'Varies by trim'],
+    ['Dry Weight', String(specs?.Dry_Weight ?? 'See dealer')],
+    ['Operating Capacity', String(specs?.Operating_Capacity ?? 'See dealer')],
+    ['Pump Configuration', String(specs?.Pumps ?? 'See dealer')]
+  ];
+
+  const trimJets = (specs: Record<string, string | number> | undefined) => {
+    const jets = specs?.Jets;
+    return jets ? String(jets) : '—';
+  };
+
+  return islandSeries.Models.map((model) => {
+    const slug = slugifyName(model.Name);
+    const imageKey = modelImageKey[slug] ?? slug;
+    const gallery = islandModelImageMap[imageKey] ?? islandModelImageMap.bimini;
+    const eliteSpecs = model.Elite_Trim?.Specs;
+    const luxurySpecs = model.Luxury_Trim?.Specs;
+    const essentialSpecs = model.Essential_Trim?.Specs;
+    const primarySpecs = eliteSpecs ?? luxurySpecs ?? essentialSpecs ?? {};
+
+    const featuresSource =
+      model.Elite_Trim?.Standard_Features ??
+      model.Luxury_Trim?.Standard_Features ??
+      model.Essential_Trim?.Standard_Features ??
+      popularOptions;
+    const featureCards = featuresSource.slice(0, 3).map((feature, index) => ({
+      tag: ['Hydrotherapy', 'Performance', 'Construction'][index] ?? 'Feature',
+      title: feature,
+      description: `${feature} is available on ${model.Name} in the Island series.`
+    }));
+
+    const specSections: ProductSpecSection[] = [];
+    if (eliteSpecs) specSections.push({ title: 'Elite Trim Specs', rows: trimSpecsRows(eliteSpecs) });
+    if (luxurySpecs) specSections.push({ title: 'Luxury Trim Specs', rows: trimSpecsRows(luxurySpecs) });
+    if (essentialSpecs) specSections.push({ title: 'Essential Trim Specs', rows: trimSpecsRows(essentialSpecs) });
+    specSections.push({
+      title: 'Shared Specifications',
+      rows: [
+        ['Heater', heater],
+        ['Cabinet Colors', (islandSeries.Shared_Cabinet_Colors ?? []).join(', ') || 'See dealer'],
+        ['Water Care', 'Ozone'],
+        ['Control', 'DirectFlow Personal Control']
+      ]
+    });
+
+    const seatValue = String(primarySpecs.Seating ?? 'Varies');
+    const gallonValue = String(primarySpecs.Operating_Capacity ?? 'Varies');
+
+    return {
+      slug,
+      name: model.Name,
+      series: 'Island Elite Series · Artesian Spas',
+      model: `${toSeatText(seatValue)} Hydrotherapy Spa`,
+      startingPrice: 'Call for Pricing',
+      heroAlt: `Artesian ${model.Name} Hot Tub`,
+      gallery,
+      quickSpecs: {
+        seats: toSeatText(seatValue),
+        jets: primarySpecs.Jets ? `${primarySpecs.Jets} Jets` : 'Jets Vary',
+        dimensions: toDimensionText(primarySpecs.Size as string | number | undefined),
+        gallons: toGallonsText(gallonValue)
+      },
+      features: featureCards.length
+        ? featureCards
+        : [
+            { tag: 'Hydrotherapy', title: 'Island Series Therapy', description: 'Hydrotherapy seat layouts designed for balanced full-body massage.' },
+            { tag: 'Performance', title: 'Trim-Based Configurations', description: 'Choose Elite, Luxury, or Essential trim based on jet and pump preferences.' },
+            { tag: 'Construction', title: 'All-Season Build', description: 'Premium shell and insulation package designed for year-round use.' }
+          ],
+      signature: {
+        title: `${model.Name} Trim Comparison`,
+        description: `${model.Name} is offered in multiple trims so you can match jet intensity and pump power to your therapy goals.`,
+        stats: [
+          { value: trimJets(eliteSpecs), label: 'Elite Jets' },
+          { value: trimJets(luxurySpecs), label: 'Luxury Jets' },
+          { value: trimJets(essentialSpecs), label: 'Essential Jets' }
+        ],
+        image: gallery[1] ?? gallery[0]
+      },
+      specSections,
+      specDiagramLabel: `${model.Name} · Island Series`,
+      specHighlights: [
+        { value: trimJets(eliteSpecs), label: 'Elite Jets' },
+        { value: trimJets(luxurySpecs), label: 'Luxury Jets' },
+        { value: trimJets(essentialSpecs), label: 'Essential Jets' },
+        { value: String(gallonValue).replace(' gal', ''), label: 'Gallons' }
+      ],
+      shellColors: [
+        { name: 'Silver Marble', gradient: 'linear-gradient(135deg, #c0c8d0, #8898a4)' },
+        { name: 'White Pearl', gradient: 'linear-gradient(135deg, #f5f0eb, #e2ddd6)' },
+        { name: 'Midnight Canyon', gradient: 'linear-gradient(135deg, #1a2535, #0e1820)' }
+      ],
+      cabinetColors: cabinetColors.length
+        ? cabinetColors
+        : [
+            { name: 'Grey', gradient: 'linear-gradient(135deg, #6b7a8a, #4a5568)' },
+            { name: 'Black', gradient: 'linear-gradient(135deg, #2a2e34, #0f1114)' },
+            { name: 'Brown', gradient: 'linear-gradient(135deg, #8b6340, #6b4a2a)' }
+          ],
+      related: []
+    };
+  });
+}
+
 function buildImageOnlyIslandModel(slug: string, name: string): SpaProduct {
   const gallery = islandModelImageMap[slug] ?? islandModelImageMap.bimini;
   return {
@@ -484,7 +648,7 @@ function buildImageOnlyIslandModel(slug: string, name: string): SpaProduct {
   };
 }
 
-export const spaProducts: SpaProduct[] = [
+const baseSpaProducts: SpaProduct[] = [
   {
     slug: 'mystique',
     name: 'Mystique',
@@ -700,31 +864,29 @@ export const spaProducts: SpaProduct[] = [
 ];
 
 const jsonIslandProducts = buildIslandProductsFromJson();
-for (const product of jsonIslandProducts) {
-  if (!spaProducts.some((p) => p.slug === product.slug)) {
-    spaProducts.push(product);
-  }
-}
-
 const json2026IslandProducts = buildIslandProductsFromJson2026();
-for (const product of json2026IslandProducts) {
-  if (!spaProducts.some((p) => p.slug === product.slug)) {
-    spaProducts.push(product);
-  }
-}
+const islandJsonProducts = buildIslandProductsFromIslandJson();
 
 const imageOnlyIslandModels: Array<[string, string]> = [
   ['grand-cayman', 'Grand Cayman'],
   ['antigua', 'Antigua'],
   ['captiva', 'Captiva'],
-  ['bahama', 'Bahama']
+  ['nevis', 'Nevis'],
+  ['santa-cruz', 'Santa Cruz']
 ];
+const imageOnlyProducts = imageOnlyIslandModels.map(([slug, name]) => buildImageOnlyIslandModel(slug, name));
 
-for (const [slug, name] of imageOnlyIslandModels) {
-  if (!spaProducts.some((p) => p.slug === slug)) {
-    spaProducts.push(buildImageOnlyIslandModel(slug, name));
-  }
-}
+// Source precedence: base manual models -> legacy JSON -> image-only -> island.json (primary, most complete).
+const allProducts = [
+  ...baseSpaProducts,
+  ...jsonIslandProducts,
+  ...json2026IslandProducts,
+  ...imageOnlyProducts,
+  ...islandJsonProducts
+];
+const mergedProducts = new Map<string, SpaProduct>();
+for (const product of allProducts) mergedProducts.set(product.slug, product);
 
+export const spaProducts = [...mergedProducts.values()];
 export const spaProductBySlug = Object.fromEntries(spaProducts.map((product) => [product.slug, product]));
 export const logoImage = brandImage('logo.webp');
