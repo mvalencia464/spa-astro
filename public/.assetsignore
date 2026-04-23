@@ -1,6 +1,2 @@
-# https://developers.cloudflare.com/workers/static-assets/binding/#ignoring-assets
-# Do not upload these as client-side static assets (gitignore format).
 _worker.js
-_redirects
-_headers
 _routes.json
