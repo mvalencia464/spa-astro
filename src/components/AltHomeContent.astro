@@ -1,0 +1,180 @@
+---
+import { getSpaProducts } from '../lib/productsData';
+import HeaderHero from './home/HeaderHero.astro';
+import MarketingSections from './home/MarketingSections.astro';
+import ContactFooter from './home/ContactFooter.astro';
+
+const spaProducts = await getSpaProducts();
+
+const collectionCards = [...spaProducts]
+  .filter((product) => product.gallery.length > 0)
+  .sort((a, b) => a.name.localeCompare(b.name));
+
+const featuredProduct = collectionCards[0];
+const secondaryCollections = collectionCards.slice(1, 13);
+
+const mosaicImages = Array.from(
+  new Set(
+    collectionCards
+      .flatMap((product) => product.gallery.slice(0, 2))
+      .filter(Boolean)
+  )
+).slice(0, 18);
+
+const seriesLabel = (series: string) => series.split('·')[0].trim();
+---
+
+<HeaderHero />
+
+<section class="section" id="spas">
+  <div class="section-inner">
+    <div class="collections-header">
+      <div>
+        <p class="section-label">Artesian Spas</p>
+        <h2 class="section-h2">Explore More<br/>Collections</h2>
+      </div>
+      <div>
+        <p class="section-sub">
+          Browse every Island Elite collection in one place. All imagery is served from your
+          R2-backed media bucket.
+        </p>
+        <a href="#collectionMosaic" class="btn-secondary" style="margin-top:20px;display:inline-flex;">
+          Browse Lifestyle Gallery →
+        </a>
+      </div>
+    </div>
+
+    <div class="collections-grid" id="spasGrid">
+      {
+        featuredProduct && (
+          <a href={`/spas/${featuredProduct.slug}`} class="col-card">
+            <img src={featuredProduct.gallery[0]} alt={featuredProduct.name} loading="eager" />
+            <div class="col-card-overlay"></div>
+            <div class="col-card-body">
+              <p class="col-card-series">Featured · {seriesLabel(featuredProduct.series)}</p>
+              <div class="col-card-name">{featuredProduct.name}</div>
+            </div>
+          </a>
+        )
+      }
+      {
+        secondaryCollections.slice(0, 7).map((product) => (
+          <a href={`/spas/${product.slug}`} class="col-card">
+            <img src={product.gallery[0]} alt={product.name} loading="lazy" />
+            <div class="col-card-overlay"></div>
+            <div class="col-card-body">
+              <p class="col-card-series">{seriesLabel(product.series)}</p>
+              <div class="col-card-name">{product.name}</div>
+            </div>
+          </a>
+        ))
+      }
+    </div>
+
+    <div class="alt-collection-grid" id="moreModels">
+      {
+        secondaryCollections.slice(7).map((product) => (
+          <a href={`/spas/${product.slug}`} class="col-card alt-collection-card">
+            <img src={product.gallery[0]} alt={product.name} loading="lazy" />
+            <div class="col-card-overlay"></div>
+            <div class="col-card-body" style="padding:12px">
+              <p class="col-card-series" style="font-size:9px">{seriesLabel(product.series)}</p>
+              <div class="col-card-name" style="font-size:18px">{product.name}</div>
+            </div>
+          </a>
+        ))
+      }
+    </div>
+  </div>
+</section>
+
+<section class="section alt-mosaic-section" id="collectionMosaic">
+  <div class="section-inner">
+    <div class="collections-header" style="margin-bottom:24px;">
+      <div>
+        <p class="section-label">R2 Lifestyle Gallery</p>
+        <h2 class="section-h2">Collection Inspiration<br/>at a Glance</h2>
+      </div>
+      <p class="section-sub">
+        More angle variety from your existing product galleries to make this home page feel richer.
+      </p>
+    </div>
+    <div class="alt-mosaic-grid">
+      {
+        mosaicImages.map((imageUrl, index) => (
+          <div class={`alt-mosaic-item ${index % 7 === 0 ? 'alt-mosaic-item--wide' : ''}`}>
+            <img src={imageUrl} alt="Artesian spa lifestyle" loading="lazy" />
+          </div>
+        ))
+      }
+    </div>
+  </div>
+</section>
+
+<MarketingSections />
+<ContactFooter />
+
+<style>
+  .alt-collection-grid {
+    display: grid;
+    grid-template-columns: repeat(5, 1fr);
+    gap: 12px;
+    margin-top: 12px;
+  }
+
+  .alt-collection-card {
+    aspect-ratio: 1 / 1;
+  }
+
+  .alt-mosaic-section {
+    background: var(--surface);
+  }
+
+  .alt-mosaic-grid {
+    display: grid;
+    grid-template-columns: repeat(6, 1fr);
+    gap: 12px;
+  }
+
+  .alt-mosaic-item {
+    border-radius: 8px;
+    overflow: hidden;
+    aspect-ratio: 1 / 1;
+    background: var(--panel);
+    border: 1px solid var(--border);
+  }
+
+  .alt-mosaic-item--wide {
+    grid-column: span 2;
+    aspect-ratio: 2 / 1;
+  }
+
+  .alt-mosaic-item img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    display: block;
+  }
+
+  @media (max-width: 1120px) {
+    .alt-collection-grid {
+      grid-template-columns: repeat(3, 1fr);
+    }
+    .alt-mosaic-grid {
+      grid-template-columns: repeat(4, 1fr);
+    }
+  }
+
+  @media (max-width: 768px) {
+    .alt-collection-grid {
+      grid-template-columns: repeat(2, 1fr);
+    }
+    .alt-mosaic-grid {
+      grid-template-columns: repeat(2, 1fr);
+    }
+    .alt-mosaic-item--wide {
+      grid-column: span 2;
+      aspect-ratio: 2 / 1;
+    }
+  }
+</style>
