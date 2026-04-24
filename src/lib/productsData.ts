@@ -1,6 +1,6 @@
 import { ConvexHttpClient } from "convex/browser";
 import { api } from "../../convex/_generated/api";
-import type { SpaProduct } from "../data/spaProducts";
+import { spaProducts as fallbackSpaProducts, type SpaProduct } from "../data/spaProducts";
 
 type ConvexProductDoc = {
   slug: string;
@@ -66,9 +66,12 @@ function normalizeProduct(doc: ConvexProductDoc): SpaProduct {
 export async function getSpaProducts(): Promise<SpaProduct[]> {
   if (!IS_DEV && cachedProducts) return cachedProducts;
   if (!CONVEX_URL) {
-    throw new Error(
-      "Missing Convex deployment URL. Set CONVEX_URL, PUBLIC_CONVEX_URL, or VITE_CONVEX_URL (e.g. in Cloudflare Pages → Settings → Environment variables for the build).",
+    console.warn(
+      "Missing Convex deployment URL. Falling back to local spaProducts data for build/runtime.",
     );
+    const localProducts = [...fallbackSpaProducts];
+    if (!IS_DEV) cachedProducts = localProducts;
+    return localProducts;
   }
 
   try {
@@ -78,9 +81,14 @@ export async function getSpaProducts(): Promise<SpaProduct[]> {
     if (!IS_DEV) cachedProducts = normalized;
     return normalized;
   } catch (error) {
-    throw new Error(
-      `Failed to load products from Convex: ${error instanceof Error ? error.message : "unknown error"}`,
+    console.warn(
+      `Failed to load products from Convex. Falling back to local spaProducts data: ${
+        error instanceof Error ? error.message : "unknown error"
+      }`,
     );
+    const localProducts = [...fallbackSpaProducts];
+    if (!IS_DEV) cachedProducts = localProducts;
+    return localProducts;
   }
 }
 
